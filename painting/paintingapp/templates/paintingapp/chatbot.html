@@ -1,0 +1,196 @@
+{% extends 'paintingapp/base.html' %}
+
+{% block title %}Art Assistant - Painting Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-robot me-2"></i>
+                        Art Assistant
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Chat Messages Container -->
+                    <div class="chat-container mb-4" style="height: 400px; overflow-y: auto;">
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- Initial welcome message -->
+                            <div class="message bot-message">
+                                <div class="message-content">
+                                    <div class="message-text">
+                                        Hello! I'm your art assistant. I can help you with information about paintings, artists, categories, and prices. What would you like to know?
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="chat-input">
+                        <form id="chatForm" class="d-flex">
+                            <input type="text" id="userInput" class="form-control me-2" placeholder="Ask me anything about paintings..." required>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-container {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .message {
+        margin-bottom: 15px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .bot-message {
+        justify-content: flex-start;
+    }
+
+    .user-message {
+        justify-content: flex-end;
+    }
+
+    .message-content {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 15px;
+        position: relative;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .bot-message .message-content {
+        background-color: #e9ecef;
+        border-top-left-radius: 0;
+    }
+
+    .user-message .message-content {
+        background-color: #007bff;
+        color: white;
+        border-top-right-radius: 0;
+    }
+
+    .message-text {
+        margin: 0;
+    }
+
+    .painting-card {
+        background: white;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 10px 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .painting-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-input {
+        position: relative;
+    }
+
+    .chat-input input {
+        border-radius: 20px;
+        padding: 12px 20px;
+    }
+
+    .chat-input button {
+        border-radius: 20px;
+        padding: 12px 20px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chatForm');
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+
+    function addMessage(message, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        
+        if (typeof message === 'string') {
+            contentDiv.innerHTML = `<div class="message-text">${message}</div>`;
+        } else {
+            // Handle structured responses (paintings, artists, etc.)
+            let content = `<div class="message-text">${message.message}</div>`;
+            
+            if (message.paintings) {
+                message.paintings.forEach(painting => {
+                    content += `
+                        <div class="painting-card">
+                            <img src="${painting.image || 'https://via.placeholder.com/300x200'}" alt="${painting.name}">
+                            <h6 class="mt-2">${painting.name}</h6>
+                            <p class="mb-1">By ${painting.artist}</p>
+                            <p class="mb-0">₹${painting.price}</p>
+                        </div>
+                    `;
+                });
+            }
+            
+            contentDiv.innerHTML = content;
+        }
+        
+        messageDiv.appendChild(contentDiv);
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const query = userInput.value.trim();
+        
+        if (query) {
+            // Add user message
+            addMessage(query, true);
+            
+            // Clear input
+            userInput.value = '';
+            
+            // Send request to server
+            fetch('/chatbot/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: `query=${encodeURIComponent(query)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                addMessage(data);
+            })
+            .catch(error => {
+                addMessage('Sorry, I encountered an error. Please try again.');
+            });
+        }
+    });
+});
+</script>
+{% endblock %} 

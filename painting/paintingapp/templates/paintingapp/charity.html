@@ -1,0 +1,431 @@
+{% extends 'paintingapp/base.html' %}
+{% load static %}
+
+{% block title %}Charity - Art for a Cause{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold" style="color: #2C3E50;">Art for a Cause</h1>
+        <p class="text-muted">Supporting communities through art</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Current Initiative Section -->
+        <div class="col-12 mb-5">
+            <div class="card border-0 shadow-sm overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-6">
+                        <img src="{% static 'images/5.jpg' %}" class="img-fluid h-100" style="object-fit: cover;" alt="Current Initiative">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body p-4 p-lg-5">
+                            <h2 class="card-title fw-bold mb-4" style="color: #2C3E50;">Current Initiative</h2>
+                            <p class="card-text">We believe in the power of art to transform lives. For every painting sold, 5% of the proceeds go directly to supporting local art education programs and community development initiatives.</p>
+                            <div class="progress mb-3" style="height: 25px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                    Rs. 75,000 / Rs. 100,000
+                                </div>
+                            </div>
+                            <p class="text-muted mb-4">Help us reach our goal of supporting 100 young artists this year</p>
+                            <a href="#donate" class="btn btn-primary btn-lg">Donate Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact Stats -->
+        <div class="col-12 mb-5">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-4">
+                        <div class="display-4 fw-bold text-primary mb-2">50+</div>
+                        <h3 class="h5 mb-3">Artists Supported</h3>
+                        <p class="text-muted mb-0">Young talents who received art supplies and education</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-4">
+                        <div class="display-4 fw-bold text-primary mb-2">20</div>
+                        <h3 class="h5 mb-3">Schools Reached</h3>
+                        <p class="text-muted mb-0">Partner schools in our art education program</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm text-center p-4">
+                        <div class="display-4 fw-bold text-primary mb-2">₹2L+</div>
+                        <h3 class="h5 mb-3">Funds Raised</h3>
+                        <p class="text-muted mb-0">Total contributions to our initiatives</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How to Help Section -->
+        <div class="col-12 mb-5">
+            <h2 class="text-center fw-bold mb-5" style="color: #2C3E50;">How You Can Help</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-4">
+                                <i class="fas fa-shopping-cart fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5 mb-3">Buy Artwork</h3>
+                            <p class="text-muted">5% of every purchase goes to our charity initiatives</p>
+                            <a href="{% url 'home' %}" class="btn btn-outline-primary mt-3">Browse Gallery</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-4">
+                                <i class="fas fa-hand-holding-heart fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5 mb-3">Make a Donation</h3>
+                            <p class="text-muted">Support our programs directly through monetary contributions</p>
+                            <a href="#donate" class="btn btn-outline-primary mt-3">Donate Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-4">
+                                <i class="fas fa-hands-helping fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="h5 mb-3">Volunteer</h3>
+                            <p class="text-muted">Join our team of volunteers and help make a difference</p>
+                            <a href="#contact" class="btn btn-outline-primary mt-3">Get Involved</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="col-12 mb-5" id="contact">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <h2 class="text-center fw-bold mb-5" style="color: #2C3E50;">Get in Touch</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <form>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" placeholder="Your Name" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="email" class="form-control" placeholder="Your Email" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <select class="form-select">
+                                            <option selected>How would you like to help?</option>
+                                            <option value="donate">Make a Donation</option>
+                                            <option value="volunteer">Volunteer</option>
+                                            <option value="partner">Become a Partner</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-primary btn-lg px-5">Send Message</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donation Section -->
+        <div class="col-12 mb-5" id="donate">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 p-lg-5">
+                    <h2 class="text-center fw-bold mb-5" style="color: #2C3E50;">Make a Donation</h2>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <form id="donationForm" class="needs-validation" novalidate>
+                                <div class="row g-4">
+                                    <!-- Donation Amount -->
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Select Donation Amount</label>
+                                        <div class="donation-amounts d-flex flex-wrap gap-3 mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="amount" id="amount500" value="500" required>
+                                                <label class="form-check-label" for="amount500">
+                                                    ₹500
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="amount" id="amount1000" value="1000">
+                                                <label class="form-check-label" for="amount1000">
+                                                    ₹1,000
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="amount" id="amount2000" value="2000">
+                                                <label class="form-check-label" for="amount2000">
+                                                    ₹2,000
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="amount" id="amount5000" value="5000">
+                                                <label class="form-check-label" for="amount5000">
+                                                    ₹5,000
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="amount" id="amountCustom" value="custom">
+                                                <label class="form-check-label" for="amountCustom">
+                                                    Custom Amount
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div id="customAmountInput" class="mb-3" style="display: none;">
+                                            <input type="number" class="form-control" placeholder="Enter amount in ₹" min="100">
+                                        </div>
+                                    </div>
+
+                                    <!-- Personal Information -->
+                                    <div class="col-md-6">
+                                        <label for="firstName" class="form-label">First Name</label>
+                                        <input type="text" class="form-control" id="firstName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" id="lastName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone" required>
+                                    </div>
+
+                                    <!-- Payment Method -->
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">Payment Method</label>
+                                        <div class="payment-methods d-flex flex-wrap gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="upi" value="upi" required>
+                                                <label class="form-check-label" for="upi">
+                                                    <i class="fas fa-mobile-alt me-2"></i>UPI
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="card" value="card">
+                                                <label class="form-check-label" for="card">
+                                                    <i class="fas fa-credit-card me-2"></i>Credit/Debit Card
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="netbanking" value="netbanking">
+                                                <label class="form-check-label" for="netbanking">
+                                                    <i class="fas fa-university me-2"></i>Net Banking
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Additional Information -->
+                                    <div class="col-12">
+                                        <label for="message" class="form-label">Message (Optional)</label>
+                                        <textarea class="form-control" id="message" rows="3" placeholder="Share why you're donating..."></textarea>
+                                    </div>
+
+                                    <!-- Terms and Submit -->
+                                    <div class="col-12">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="terms" required>
+                                            <label class="form-check-label" for="terms">
+                                                I agree to the <a href="#" class="text-primary">terms and conditions</a>
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                                            <i class="fas fa-heart me-2"></i>Donate Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thank You Modal -->
+<div class="modal fade" id="thankYouModal" tabindex="-1" aria-labelledby="thankYouModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="thank-you-icon mb-4">
+                    <i class="fas fa-heart-circle-check fa-4x text-primary"></i>
+                </div>
+                <h3 class="mb-3" style="color: #2C3E50;">Thank You for Your Donation!</h3>
+                <p class="text-muted mb-4">Your generosity will help us support more young artists and make a difference in their lives.</p>
+                <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-primary {
+        background: linear-gradient(135deg, #2C3E50 0%, #3498DB 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-outline-primary {
+        border: 2px solid #3498DB;
+        color: #3498DB;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background: #3498DB;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .progress {
+        border-radius: 50px;
+        background-color: #e9ecef;
+    }
+
+    .progress-bar {
+        background: linear-gradient(135deg, #2C3E50 0%, #3498DB 100%);
+        border-radius: 50px;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .text-primary {
+        color: #3498DB !important;
+    }
+
+    .form-control, .form-select {
+        padding: 0.75rem;
+        border: 1px solid #e9ecef;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #3498DB;
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .donation-amounts .form-check {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .donation-amounts .form-check:hover {
+        background: #e9ecef;
+    }
+
+    .donation-amounts .form-check-input:checked + .form-check-label {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .donation-amounts .form-check-input:checked ~ .form-check {
+        background: #e9ecef;
+    }
+
+    .payment-methods .form-check {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-methods .form-check:hover {
+        background: #e9ecef;
+    }
+
+    .payment-methods .form-check-input:checked + .form-check-label {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .thank-you-icon {
+        color: #3498DB;
+        animation: heartBeat 1.5s ease-in-out;
+    }
+
+    @keyframes heartBeat {
+        0% { transform: scale(1); }
+        14% { transform: scale(1.3); }
+        28% { transform: scale(1); }
+        42% { transform: scale(1.3); }
+        70% { transform: scale(1); }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Custom amount input toggle
+    const customAmountRadio = document.getElementById('amountCustom');
+    const customAmountInput = document.getElementById('customAmountInput');
+    
+    customAmountRadio.addEventListener('change', function() {
+        if (this.checked) {
+            customAmountInput.style.display = 'block';
+        } else {
+            customAmountInput.style.display = 'none';
+        }
+    });
+
+    // Form validation and submission
+    const form = document.getElementById('donationForm');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        if (!form.checkValidity()) {
+            event.stopPropagation();
+            form.classList.add('was-validated');
+            return;
+        }
+
+        // Show thank you modal
+        const thankYouModal = new bootstrap.Modal(document.getElementById('thankYouModal'));
+        thankYouModal.show();
+
+        // Reset form
+        form.reset();
+        form.classList.remove('was-validated');
+        customAmountInput.style.display = 'none';
+    });
+});
+</script>
+{% endblock %} 

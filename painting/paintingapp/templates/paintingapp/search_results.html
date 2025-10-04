@@ -1,0 +1,186 @@
+{% extends 'paintingapp/base.html' %}
+
+{% block title %}Search Results - Painting Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Search Header -->
+    <div class="text-center py-5 mb-4">
+        <h1 class="display-5 fw-bold mb-3">Search Results</h1>
+        <p class="lead text-muted">Showing results for "{{ query }}"</p>
+    </div>
+
+    <!-- Filters and Results Count -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="d-flex align-items-center">
+                <span class="badge bg-primary me-2">{{ results_count }} results found</span>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
+                        <i class="fas fa-filter"></i> Filter Results
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                        <li><a class="dropdown-item" href="?q={{ query }}&sort=newest">Newest First</a></li>
+                        <li><a class="dropdown-item" href="?q={{ query }}&sort=oldest">Oldest First</a></li>
+                        <li><a class="dropdown-item" href="?q={{ query }}&sort=price_high">Price: High to Low</a></li>
+                        <li><a class="dropdown-item" href="?q={{ query }}&sort=price_low">Price: Low to High</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <form class="d-flex" action="{% url 'search' %}" method="get">
+                <div class="input-group">
+                    <input type="search" class="form-control" name="q" value="{{ query }}" placeholder="Search again..." required>
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Grid -->
+    <div class="row g-4">
+        {% if results %}
+            {% for item in results %}
+            <div class="col-md-4 col-lg-3">
+                <div class="card product-card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="position-relative">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 250px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/300x250" class="card-img-top" alt="No image available">
+                        {% endif %}
+                        <div class="product-overlay">
+                            <a href="{% url 'product_detail' item.pk %}" class="btn btn-light btn-lg stretched-link">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <div class="d-flex align-items-center mb-2">
+                            {% if item.artist.profile_picture %}
+                            <img src="{{ item.artist.profile_picture.url }}" alt="{{ item.artist.name }}" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                            {% endif %}
+                            <p class="card-text text-muted mb-0">By {{ item.artist.name }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">₹{{ item.price }}</span>
+                            {% if item.stock > 0 %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check"></i> In Stock
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger">
+                                <i class="fas fa-times"></i> Out of Stock
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                    <h3 class="mb-3">No Results Found</h3>
+                    <p class="text-muted mb-4">We couldn't find any paintings matching your search. Try different keywords or browse our categories.</p>
+                    <a href="{% url 'category_list' %}" class="btn btn-primary">
+                        <i class="fas fa-th-large"></i> Browse Categories
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Pagination -->
+    {% if results.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if results.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&page={{ results.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            
+            {% for num in results.paginator.page_range %}
+            <li class="page-item {% if num == results.number %}active{% endif %}">
+                <a class="page-link" href="?q={{ query }}&page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            
+            {% if results.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&page={{ results.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .product-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .product-card:hover .product-overlay {
+        opacity: 1;
+    }
+    
+    .hover-shadow {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .page-link {
+        border-radius: 5px;
+        margin: 0 2px;
+    }
+    
+    .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .dropdown-menu {
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dropdown-item:hover {
+        background-color: var(--primary-color);
+        color: white;
+    }
+</style>
+{% endblock %} 

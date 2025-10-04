@@ -1,0 +1,116 @@
+{% extends 'paintingapp/base.html' %}
+
+{% block title %}About Us - Painting Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="text-center py-5 mb-5">
+        <h1 class="display-4 fw-bold mb-4">About Our Painting Store</h1>
+        <p class="lead text-muted">Where Art Meets Passion</p>
+    </div>
+
+    <!-- Story Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+            <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809" class="img-fluid rounded shadow" alt="Art Gallery">
+        </div>
+        <div class="col-md-6">
+            <h2 class="fw-bold mb-4">Our Story</h2>
+            <p class="lead text-muted mb-4">Founded in 2024, our painting store began as a small gallery showcasing local artists' work. Today, we've grown into a vibrant online platform connecting art lovers with talented artists from around the world.</p>
+            <p>We believe in making art accessible to everyone while providing artists with a platform to showcase their creativity and reach a global audience. Our curated collection features diverse styles, from traditional to contemporary, ensuring there's something for every art enthusiast.</p>
+        </div>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="bg-light py-5 mb-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="text-center">
+                        <i class="fas fa-palette fa-3x text-primary mb-3"></i>
+                        <h3 class="h4">Support Artists</h3>
+                        <p class="text-muted">We provide a platform for artists to showcase and sell their work, helping them build sustainable careers.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="text-center">
+                        <i class="fas fa-heart fa-3x text-primary mb-3"></i>
+                        <h3 class="h4">Promote Art</h3>
+                        <p class="text-muted">We're passionate about making art accessible and helping people discover the joy of collecting.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="text-center">
+                        <i class="fas fa-globe fa-3x text-primary mb-3"></i>
+                        <h3 class="h4">Global Reach</h3>
+                        <p class="text-muted">We connect artists and art lovers worldwide, creating a vibrant global art community.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="mb-5">
+        <h2 class="text-center fw-bold mb-5">Meet Our Team</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a" class="card-img-top" alt="Team Member" style="height: 300px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">John Doe</h5>
+                        <p class="text-muted">Founder & CEO</p>
+                        <p class="card-text">Passionate about art and technology, John leads our mission to revolutionize the art market.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2" class="card-img-top" alt="Team Member" style="height: 300px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Jane Smith</h5>
+                        <p class="text-muted">Art Curator</p>
+                        <p class="card-text">With a keen eye for talent, Jane ensures our collection maintains the highest artistic standards.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" class="card-img-top" alt="Team Member" style="height: 300px; object-fit: cover;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Mike Johnson</h5>
+                        <p class="text-muted">Artist Relations</p>
+                        <p class="card-text">Mike works closely with our artists to ensure they have the support they need to succeed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center py-5">
+        <h2 class="fw-bold mb-4">Join Our Art Community</h2>
+        <p class="lead text-muted mb-4">Whether you're an artist or an art lover, we'd love to have you as part of our community.</p>
+        <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-envelope"></i> Get in Touch
+        </a>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bg-light {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+</style>
+{% endblock %} 

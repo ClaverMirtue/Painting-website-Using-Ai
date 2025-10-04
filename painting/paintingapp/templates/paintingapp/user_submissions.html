@@ -1,0 +1,311 @@
+{% extends 'paintingapp/base.html' %}
+{% load static %}
+
+{% block title %}User Submissions - Art Gallery{% endblock %}
+
+{% block extra_css %}
+<style>
+    .submissions-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    
+    .submissions-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .submissions-header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .submission-card {
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .submission-card:nth-child(1) { animation-delay: 0.1s; }
+    .submission-card:nth-child(2) { animation-delay: 0.2s; }
+    .submission-card:nth-child(3) { animation-delay: 0.3s; }
+    .submission-card:nth-child(4) { animation-delay: 0.4s; }
+    .submission-card:nth-child(5) { animation-delay: 0.5s; }
+    .submission-card:nth-child(6) { animation-delay: 0.6s; }
+    
+    .submission-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .submission-image {
+        height: 300px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .submission-card:hover .submission-image {
+        transform: scale(1.05);
+    }
+    
+    .submission-info {
+        padding: 1.5rem;
+        background: white;
+    }
+    
+    .submission-title {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .submission-description {
+        color: var(--dark-color);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .submission-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .artist-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .artist-info i {
+        color: var(--accent-color);
+    }
+    
+    .date-info {
+        color: var(--accent-color);
+        font-size: 0.9rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 0;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: var(--dark-color);
+        margin-bottom: 2rem;
+    }
+    
+    .submit-btn {
+        padding: 0.8rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        background: var(--primary-color);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .submit-btn:hover {
+        background: var(--accent-color);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    .view-details-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+    
+    .view-details-btn:hover {
+        background: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .details-modal .modal-content {
+        border-radius: 15px;
+        border: none;
+    }
+    
+    .details-modal .modal-header {
+        background: var(--primary-color);
+        color: white;
+        border-radius: 15px 15px 0 0;
+        border: none;
+    }
+    
+    .details-modal .modal-body {
+        padding: 2rem;
+    }
+    
+    .details-modal .modal-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .details-modal .modal-title {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .details-modal .modal-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--dark-color);
+        margin-bottom: 1.5rem;
+    }
+    
+    .details-modal .modal-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .details-modal .modal-date {
+        color: var(--accent-color);
+        font-size: 0.9rem;
+    }
+    
+    .details-modal .modal-artist {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .details-modal .modal-artist i {
+        color: var(--accent-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="submissions-header">
+    <div class="container">
+        <h1>User Submissions</h1>
+        <p>Discover amazing artwork submitted by our talented community</p>
+    </div>
+</div>
+
+<div class="container">
+    {% if submissions %}
+        <div class="row">
+            {% for submission in submissions %}
+                <div class="col-md-4">
+                    <div class="card submission-card">
+                        <img src="{{ submission.image.url }}" class="card-img-top submission-image" alt="{{ submission.name }}">
+                        <div class="card-body submission-info">
+                            <h5 class="card-title submission-title">{{ submission.name }}</h5>
+                            <p class="card-text submission-description">{{ submission.description|truncatewords:20 }}</p>
+                            <div class="submission-meta">
+                                <div class="artist-info">
+                                    <i class="fas fa-user"></i>
+                                    <span>{{ submission.artist.username|default:"Anonymous" }}</span>
+                                </div>
+                                <div class="date-info">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ submission.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                            <button class="btn view-details-btn w-100 mt-3" data-bs-toggle="modal" data-bs-target="#detailsModal{{ submission.id }}">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Details Modal -->
+                <div class="modal fade details-modal" id="detailsModal{{ submission.id }}" tabindex="-1" aria-labelledby="detailsModalLabel{{ submission.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailsModalLabel{{ submission.id }}">{{ submission.name }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ submission.image.url }}" class="modal-image" alt="{{ submission.name }}">
+                                <h3 class="modal-title">{{ submission.name }}</h3>
+                                <p class="modal-description">{{ submission.description }}</p>
+                                <div class="modal-meta">
+                                    <div class="modal-artist">
+                                        <i class="fas fa-user"></i>
+                                        <span>{{ submission.artist.username|default:"Anonymous" }}</span>
+                                    </div>
+                                    <div class="modal-date">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        {{ submission.created_at|date:"F d, Y" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-paint-brush"></i>
+            <h3>No Submissions Yet</h3>
+            <p>Be the first to share your artwork with our community!</p>
+            <button class="btn btn-primary submit-btn" data-bs-toggle="modal" data-bs-target="#drawingModal">
+                <i class="fas fa-upload me-2"></i>Submit Your Art
+            </button>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    AOS.init({
+        duration: 800,
+        once: true
+    });
+</script>
+{% endblock %} 

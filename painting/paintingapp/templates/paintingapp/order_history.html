@@ -1,0 +1,315 @@
+{% extends 'paintingapp/base.html' %}
+{% load static %}
+
+{% block title %}Order History{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-history-section {
+        padding: 4rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        min-height: 100vh;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .order-header {
+        background: var(--primary-color);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .order-date {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.9rem;
+    }
+
+    .order-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .status-pending { background: #ffc107; color: #000; }
+    .status-processing { background: #17a2b8; color: #fff; }
+    .status-shipped { background: #28a745; color: #fff; }
+    .status-delivered { background: #6c757d; color: #fff; }
+    .status-cancelled { background: #dc3545; color: #fff; }
+
+    .order-content {
+        padding: 1.5rem;
+    }
+
+    .order-items {
+        margin-bottom: 1.5rem;
+    }
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 1rem;
+    }
+
+    .item-details {
+        flex: 1;
+    }
+
+    .item-name {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-artist {
+        color: var(--accent-color);
+        font-size: 0.9rem;
+    }
+
+    .item-quantity {
+        color: var(--dark-color);
+        font-size: 0.9rem;
+    }
+
+    .item-price {
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .order-summary {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    .summary-total {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        border-top: 2px solid var(--primary-color);
+        padding-top: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 0;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--accent-color);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: var(--dark-color);
+        margin-bottom: 2rem;
+    }
+
+    .shipping-info {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-top: 1.5rem;
+    }
+
+    .shipping-info h5 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .shipping-info p {
+        margin-bottom: 0.5rem;
+    }
+
+    .shipping-info i {
+        color: var(--accent-color);
+        margin-right: 0.5rem;
+    }
+
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+    }
+
+    .table {
+        border-color: #e9ecef;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        color: #2C3E50;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #2C3E50 0%, #3498DB 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold" style="color: #2C3E50;">Order History</h1>
+        <p class="text-muted">View all your past orders</p>
+    </div>
+
+    {% if orders %}
+    <div class="row">
+        {% for order in orders %}
+        <div class="col-lg-8 mx-auto mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold" style="color: #2C3E50;">Order #{{ order.id }}</h5>
+                        <span class="badge bg-primary">{{ order.created_at|date:"F d, Y" }}</span>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #2C3E50;">Order Information</h6>
+                            <p class="mb-2"><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+                            <p class="mb-2"><strong>Total Amount:</strong> Rs. {{ order.total_amount }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3" style="color: #2C3E50;">Shipping Information</h6>
+                            <p class="mb-2"><strong>Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                            <p class="mb-2"><strong>Address:</strong> {{ order.address }}, {{ order.city }} - {{ order.pincode }}</p>
+                        </div>
+                    </div>
+
+                    <h6 class="mb-3" style="color: #2C3E50;">Order Items</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.orderitem_set.all %}
+                                <tr>
+                                    <td>{{ item.product.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>Rs. {{ item.price }}</td>
+                                    <td>Rs. {{ item.subtotal }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                    <td>Rs. {{ order.subtotal }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+                                    <td>Rs. {{ order.shipping_cost }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td><strong>Rs. {{ order.total_amount }}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="empty-state mb-4">
+            <i class="fas fa-shopping-bag fa-4x text-muted"></i>
+        </div>
+        <h3 class="mb-3" style="color: #2C3E50;">No Orders Yet</h3>
+        <p class="text-muted mb-4">You haven't placed any orders yet.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">
+            <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

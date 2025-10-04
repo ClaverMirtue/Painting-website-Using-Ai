@@ -1,0 +1,1608 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Painting Store{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2C3E50;  /* Dark blue-gray */
+            --secondary-color: #3498DB;  /* Bright blue */
+            --accent-color: #2980B9;  /* Medium blue */
+            --light-color: #ECF0F1;  /* Light gray */
+            --dark-color: #2C3E50;  /* Dark blue-gray */
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ECF0F1 !important;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+        }
+        
+        .navbar-brand i {
+            color: #3498DB;
+            margin-right: 8px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 0.7rem 1.2rem;
+            transition: all 0.3s ease;
+            color: #ECF0F1 !important;
+            position: relative;
+            font-size: 1.1rem;
+            margin: 0 5px;
+            border-radius: 5px;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #3498DB !important;
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            margin-right: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .cart-btn {
+            position: relative;
+            padding: 0.7rem 1.2rem;
+            background: #3498DB;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+        
+        .cart-btn:hover {
+            background: #2980B9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E74C3C;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .search-form {
+            position: relative;
+            margin-right: 15px;
+        }
+        
+        .search-form .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            border-radius: 25px;
+            width: 250px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-form .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+            border-color: #3498DB;
+        }
+        
+        .search-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .search-form .btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+        }
+        
+        .search-form .btn:hover {
+            color: #3498DB;
+        }
+        
+        .btn-outline-light {
+            border: 1px solid #ECF0F1;
+            color: #ECF0F1;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: #3498DB;
+            border-color: #3498DB;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .dropdown-menu {
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .dropdown-item {
+            color: #ECF0F1;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #3498DB;
+            color: #ECF0F1;
+            transform: translateX(5px);
+        }
+        
+        .dropdown-divider {
+            border-color: rgba(255,255,255,0.1);
+        }
+        
+        .dropdown-item.text-danger {
+            color: #ff6b6b !important;
+        }
+        
+        .dropdown-item.text-danger:hover {
+            background-color: rgba(255,107,107,0.1);
+        }
+        
+        .input-group {
+            max-width: 300px;
+        }
+        
+        .input-group .form-control {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .input-group .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .input-group .btn-outline-primary {
+            border-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .input-group .btn-outline-primary:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background-color: var(--primary-color);
+                padding: 1rem;
+                border-radius: 10px;
+                margin-top: 1rem;
+            }
+            
+            .nav-item {
+                margin: 0.5rem 0;
+            }
+            
+            .d-flex {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .input-group {
+                max-width: 100%;
+                margin: 1rem 0;
+            }
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            padding: 50px 0;
+            margin-top: 50px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .footer h5 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .footer-link {
+            color: var(--light-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--secondary-color);
+        }
+        
+        .social-icons a {
+            color: var(--light-color);
+            font-size: 1.5rem;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icons a:hover {
+            color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            margin-top: 30px;
+            color: var(--light-color);
+        }
+
+        .floating-chat {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        .chat-input {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .bot-message .message-content {
+            background-color: #e9ecef;
+            border-top-left-radius: 0;
+        }
+
+        .user-message .message-content {
+            background-color: var(--primary-color);
+            color: white;
+            border-top-right-radius: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-input input {
+            border-radius: 20px;
+            padding: 12px 20px;
+        }
+
+        .chat-input button {
+            border-radius: 20px;
+            padding: 12px 20px;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            z-index: 1030;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            margin-right: 1.5rem;
+        }
+        
+        .navbar-nav {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-item {
+            flex: 0 1 auto;
+            text-align: center;
+            margin: 0 2px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            font-size: 0.95rem;
+        }
+        
+        .nav-link:hover {
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            font-weight: 600;
+        }
+        
+        .nav-link i {
+            font-size: 1rem;
+        }
+        
+        /* Responsive adjustments for navbar */
+        @media (max-width: 991.98px) {
+            .navbar .container {
+                justify-content: space-between;
+            }
+            
+            .navbar-nav {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.3rem;
+            }
+            
+            .nav-item {
+                width: 100%;
+                margin: 2px 0;
+            }
+            
+            .nav-link {
+                justify-content: flex-start;
+                padding: 0.6rem;
+            }
+            
+            .navbar-brand {
+                margin-right: 0;
+            }
+        }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-color);
+            transform: translateX(5px);
+        }
+        
+        .btn-outline-light:hover {
+            transform: translateY(-2px);
+        }
+
+        .canvas-container {
+            background-color: white;
+            margin-bottom: 1rem;
+        }
+        
+        #drawingCanvas {
+            cursor: crosshair;
+            background-color: white;
+        }
+        
+        .drawing-tools {
+            margin-bottom: 1rem;
+        }
+        
+        .drawing-tools button {
+            margin-right: 0.5rem;
+        }
+
+        .image-preview-container {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        #imagePreview {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            margin-top: 76px;
+            width: 100vw;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .hero-slider {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            width: 90%;
+            max-width: 1200px;
+            z-index: 2;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-content p {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-content .btn {
+            opacity: 0;
+            transform: translateY(30px);
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #3498DB 0%, #2C3E50 100%);
+            border: none;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .hero-content .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .hero-slide.active .animate-text {
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero-slide.active .hero-content h1 {
+            animation-delay: 0.3s;
+        }
+
+        .hero-slide.active .hero-content p {
+            animation-delay: 0.6s;
+        }
+
+        .hero-slide.active .hero-content .btn {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slider-controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 3;
+        }
+
+        .prev-btn, .next-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .prev-btn:hover, .next-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .slider-dots {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        /* Overlay for better text visibility */
+        .hero-slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+        }
+
+        /* Home Page Specific Styles */
+        .featured-section {
+            padding: 80px 0;
+            background: var(--light-color);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .featured-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .featured-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .featured-card .card-body {
+            padding: 20px;
+        }
+
+        .featured-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .featured-card p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .featured-card .price {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .featured-card .btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .featured-card .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Page Content Styles */
+        main {
+            margin-top: 76px;
+            min-height: calc(100vh - 76px - 300px); /* Subtract navbar and footer height */
+            padding: 2rem 0;
+        }
+
+        .page-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+        .n{
+            display: flex
+;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: center;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .page-content {
+                padding: 0 0.5rem;
+            }
+
+            .content-card {
+                padding: 1.5rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container n">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-palette"></i>Art Gallery
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}" href="{% url 'category_list' %}">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'artist_list' %}active{% endif %}" href="#" data-bs-toggle="modal" data-bs-target="#drawingModal">Your Art</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                    </li>
+                   
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'customize' %}">
+                            <i class="fas fa-paint-brush me-1"></i>Customize
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'charity' %}">
+                            <i class="fas fa-hand-holding-heart me-1"></i>Charity
+                        </a>
+                    </li>
+                </ul>
+                <form class="search-form me-3" action="{% url 'search' %}" method="GET">
+                    <input class="form-control" type="search" name="q" placeholder="Search paintings..." required>
+                    <button class="btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'view_cart' %}" class="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                    {% if user.is_authenticated %}
+                        <div class="dropdown ms-3">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+                                {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'order_history' %}">Order History</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-light ms-3">Login</a>
+                        <a href="{% url 'signup' %}" class="btn btn-primary ms-2">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-content">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>About Art Gallery</h5>
+                    <p>Discover and purchase unique paintings from talented artists around the world. Our platform connects art lovers with creators.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="footer-link">Home</a></li>
+                        <li><a href="{% url 'category_list' %}" class="footer-link">Categories</a></li>
+                        <li><a href="{% url 'artist_list' %}" class="footer-link">Artists</a></li>
+                        <li><a href="{% url 'about' %}" class="footer-link">About</a></li>
+
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Contact Us</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> 123 Art Street, Gallery City</li>
+                        <li><i class="fas fa-phone me-2"></i> +1 234 567 890</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@artgallery.com</li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe to our newsletter for updates on new artists and paintings.</p>
+                    <form class="mt-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Your email">
+                            <button class="btn btn-outline-light" type="submit">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="copyright text-center">
+                <p class="mb-0">&copy; 2024 Art Gallery. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Chat Button -->
+    <div class="floating-chat">
+        <button class="chat-button" onclick="toggleChat()">
+            <i class="fas fa-robot"></i>
+        </button>
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-robot me-2"></i>
+                    Art Assistant
+                </h5>
+                <button class="close-btn" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <div class="message-text">
+                            Hello! I'm your art assistant. I can help you with information about paintings, artists, categories, and prices. What would you like to know?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <form id="chatForm" class="d-flex">
+                    <input type="text" id="userInput" class="form-control me-2" placeholder="Ask me anything..." required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawing Modal -->
+    <div class="modal fade" id="drawingModal" tabindex="-1" aria-labelledby="drawingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="drawingModalLabel">Upload Your Art</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="drawingForm">
+                        <div class="mb-3">
+                            <label for="drawingName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="drawingName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="drawingDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="drawingDescription" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="imageUpload" class="form-label">Upload Image</label>
+                            <div class="input-group">
+                                <input type="file" class="form-control" id="imageUpload" accept="image/*" required>
+                            </div>
+                            <div class="mt-2">
+                                <div class="image-preview-container" style="display: none;">
+                                    <img id="imagePreview" class="img-fluid rounded" style="max-height: 300px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i>Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drawing Results -->
+    <div id="drawingResults" class="container mt-4" style="display: none;">
+        <h3 class="text-center mb-4">Your Artwork</h3>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <img id="submittedImage" class="card-img-top" src="" alt="Submitted Art">
+                    <div class="card-body">
+                        <h5 id="submittedName" class="card-title"></h5>
+                        <p id="submittedDescription" class="card-text"></p>
+                        <p class="text-muted">By: <span id="submittedArtist"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    </script>
+    
+    <script>
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            if (chatWindow.style.display === 'flex') {
+                chatWindow.style.display = 'none';
+            } else {
+                chatWindow.style.display = 'flex';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatForm = document.getElementById('chatForm');
+            const chatMessages = document.getElementById('chatMessages');
+            const userInput = document.getElementById('userInput');
+
+            function addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
+                if (typeof message === 'string') {
+                    contentDiv.innerHTML = `<div class="message-text">${message}</div>`;
+                } else {
+                    let content = `<div class="message-text">${message.message}</div>`;
+                    
+                    if (message.data && message.data.length > 0) {
+                        const type = message.data[0].type;
+                        
+                        if (type === 'painting') {
+                            content += '<div class="paintings-grid">';
+                            message.data.forEach(painting => {
+                                content += `
+                                    <div class="painting-card">
+                                        <div class="painting-image">
+                                            <img src="${painting.image || 'https://via.placeholder.com/300x200'}" alt="${painting.name}">
+                                            <div class="stock-badge ${painting.stock > 0 ? 'in-stock' : 'out-of-stock'}">
+                                                ${painting.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                                            </div>
+                                        </div>
+                                        <div class="painting-info">
+                                            <h6 class="painting-name">${painting.name}</h6>
+                                            <p class="artist-name">By ${painting.artist}</p>
+                                            <p class="category">Category: ${painting.category}</p>
+                                            <p class="price">₹${painting.price}</p>
+                                            <a href="${painting.url}" class="view-details">View Details</a>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            content += '</div>';
+                        }
+                        else if (type === 'artist') {
+                            content += '<div class="artists-grid">';
+                            message.data.forEach(artist => {
+                                content += `
+                                    <div class="artist-card">
+                                        <div class="artist-image">
+                                            <img src="${artist.image || 'https://via.placeholder.com/150x150'}" alt="${artist.name}">
+                                        </div>
+                                        <div class="artist-info">
+                                            <h6 class="artist-name">${artist.name}</h6>
+                                            <p class="profession">${artist.profession}</p>
+                                            <p class="paintings-count">${artist.paintings_count} Paintings</p>
+                                            <a href="${artist.url}" class="view-profile">View Profile</a>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            content += '</div>';
+                        }
+                        else if (type === 'category') {
+                            content += '<div class="categories-list">';
+                            message.data.forEach(category => {
+                                content += `
+                                    <div class="category-item">
+                                        <h6 class="category-name">${category.name}</h6>
+                                        <div class="category-stats">
+                                            <span class="paintings-count">${category.count} Paintings</span>
+                                            <span class="artists-count">${category.artists_count} Artists</span>
+                                        </div>
+                                        <a href="${category.url}" class="view-category">Browse Category</a>
+                                    </div>
+                                `;
+                            });
+                            content += '</div>';
+                        }
+                        else if (type === 'price_info') {
+                            const priceInfo = message.data[0];
+                            content += `
+                                <div class="price-info">
+                                    <div class="price-range">
+                                        <div class="price-item">
+                                            <span class="label">Minimum Price:</span>
+                                            <span class="value">₹${priceInfo.min_price}</span>
+                                        </div>
+                                        <div class="price-item">
+                                            <span class="label">Maximum Price:</span>
+                                            <span class="value">₹${priceInfo.max_price}</span>
+                                        </div>
+                                        <div class="price-item">
+                                            <span class="label">Average Price:</span>
+                                            <span class="value">₹${priceInfo.avg_price}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    contentDiv.innerHTML = content;
+                }
+                
+                messageDiv.appendChild(contentDiv);
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Add styles for the new response formats
+            const style = document.createElement('style');
+            style.textContent = `
+                .paintings-grid, .artists-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 15px;
+                    margin-top: 15px;
+                }
+                
+                .painting-card, .artist-card {
+                    background: white;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                
+                .painting-image, .artist-image {
+                    position: relative;
+                    height: 150px;
+                    overflow: hidden;
+                }
+                
+                .painting-image img, .artist-image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                
+                .stock-badge {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    padding: 5px 10px;
+                    border-radius: 15px;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+                
+                .in-stock {
+                    background-color: #28a745;
+                    color: white;
+                }
+                
+                .out-of-stock {
+                    background-color: #dc3545;
+                    color: white;
+                }
+                
+                .painting-info, .artist-info {
+                    padding: 15px;
+                }
+                
+                .painting-name, .artist-name {
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                }
+                
+                .artist-name, .category {
+                    color: #666;
+                    font-size: 14px;
+                }
+                
+                .price {
+                    color: var(--primary-color);
+                    font-weight: bold;
+                    margin: 10px 0;
+                }
+                
+                .view-details, .view-profile, .view-category {
+                    display: inline-block;
+                    padding: 5px 15px;
+                    background-color: var(--primary-color);
+                    color: white;
+                    border-radius: 15px;
+                    text-decoration: none;
+                    font-size: 14px;
+                }
+                
+                .categories-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    margin-top: 15px;
+                }
+                
+                .category-item {
+                    background: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                
+                .category-stats {
+                    display: flex;
+                    gap: 15px;
+                    margin: 10px 0;
+                    color: #666;
+                }
+                
+                .price-info {
+                    background: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin-top: 15px;
+                }
+                
+                .price-range {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                
+                .price-item {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;
+                    background: #f8f9fa;
+                    border-radius: 5px;
+                }
+                
+                .price-item .label {
+                    color: #666;
+                }
+                
+                .price-item .value {
+                    color: var(--primary-color);
+                    font-weight: bold;
+                }
+            `;
+            document.head.appendChild(style);
+
+            chatForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = userInput.value.trim();
+                
+                if (query) {
+                    addMessage(query, true);
+                    userInput.value = '';
+                    
+                    // Get CSRF token from cookie
+                    function getCookie(name) {
+                        let cookieValue = null;
+                        if (document.cookie && document.cookie !== '') {
+                            const cookies = document.cookie.split(';');
+                            for (let i = 0; i < cookies.length; i++) {
+                                const cookie = cookies[i].trim();
+                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
+                    }
+                    
+                    const csrftoken = getCookie('csrftoken');
+                    
+                    // Send request to server
+                    fetch('/chatbot/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: `query=${encodeURIComponent(query)}`
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        addMessage(data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        addMessage('Sorry, I encountered an error. Please try again.');
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewContainer = document.querySelector('.image-preview-container');
+            
+            // Image preview functionality
+            imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Form submission
+            document.getElementById('drawingForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('drawingName').value;
+                const description = document.getElementById('drawingDescription').value;
+                const imageFile = imageUpload.files[0];
+                
+                if (!imageFile) {
+                    alert('Please select an image to upload');
+                    return;
+                }
+                
+                // Create FormData object
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('description', description);
+                formData.append('image', imageFile);
+                
+                // Get CSRF token
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                // Submit form data
+                fetch('/submit-drawing/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hide modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('drawingModal'));
+                        modal.hide();
+                        
+                        // Redirect to submissions page
+                        window.location.href = '/submissions/';
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting your artwork.');
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelector('.slider-dots');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            let currentSlide = 0;
+
+            // Create dots
+            slides.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (index === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(index));
+                dots.appendChild(dot);
+            });
+
+            function updateSlider() {
+                slides.forEach((slide, index) => {
+                    slide.classList.remove('active');
+                    dots.children[index].classList.remove('active');
+                });
+                slides[currentSlide].classList.add('active');
+                dots.children[currentSlide].classList.add('active');
+            }
+
+            function goToSlide(index) {
+                currentSlide = index;
+                updateSlider();
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                updateSlider();
+            }
+
+            function prevSlide() {
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                updateSlider();
+            }
+
+            // Event listeners
+            nextBtn.addEventListener('click', nextSlide);
+            prevBtn.addEventListener('click', prevSlide);
+
+            // Auto slide
+            setInterval(nextSlide, 5000);
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

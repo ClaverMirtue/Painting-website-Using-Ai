@@ -1,0 +1,182 @@
+{% extends 'paintingapp/base.html' %}
+
+{% block title %}{{ product.name }} - Painting Store{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="position-relative">
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 600px; object-fit: contain;">
+                    {% if product.stock > 0 %}
+                    <span class="badge bg-success position-absolute top-0 end-0 m-3">
+                        <i class="fas fa-check"></i> In Stock
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-3">
+                        <i class="fas fa-times"></i> Out of Stock
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title display-5 fw-bold mb-3">{{ product.name }}</h1>
+                    
+                    <!-- Artist Info -->
+                    <div class="d-flex align-items-center mb-4">
+                        {% if product.artist.profile_picture %}
+                        <img src="{{ product.artist.profile_picture.url }}" alt="{{ product.artist.name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                        {% endif %}
+                        <div>
+                            <p class="mb-0 text-muted">By</p>
+                            <h5 class="mb-0">{{ product.artist.name }}</h5>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="mb-4">
+                        <h2 class="text-primary">Rs. {{ product.price }}</h2>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h4>Description</h4>
+                        <p class="text-muted">{{ product.description }}</p>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <h4>Category</h4>
+                        <a href="{% url 'category_detail' product.category.pk %}" class="badge bg-secondary text-decoration-none">
+                            {{ product.category.name }}
+                        </a>
+                    </div>
+
+                    <!-- Stock Info -->
+                    <div class="mb-4">
+                        <h4>Availability</h4>
+                        {% if product.stock > 0 %}
+                        <p class="text-success">
+                            <i class="fas fa-check-circle"></i> {{ product.stock }} pieces available
+                        </p>
+                        {% else %}
+                        <p class="text-danger">
+                            <i class="fas fa-times-circle"></i> Currently out of stock
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-3">
+                        {% if user.is_authenticated %}
+                            {% if product.stock > 0 %}
+                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </form>
+                            {% endif %}
+                        {% else %}
+                        <div class="alert alert-info">
+                            Please <a href="{% url 'login' %}">login</a> to add items to your cart.
+                        </div>
+                        {% endif %}
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="mt-5">
+        <h2 class="mb-4">Related Paintings</h2>
+        <div class="row g-4">
+            {% for related_product in product.category.product_set.all|slice:":4" %}
+            {% if related_product.id != product.id %}
+            <div class="col-md-3">
+                <div class="card product-card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="position-relative">
+                        <img src="{{ related_product.image.url }}" class="card-img-top" alt="{{ related_product.name }}" style="height: 250px; object-fit: cover;">
+                        <div class="product-overlay">
+                            <a href="{% url 'product_detail' related_product.pk %}" class="btn btn-light btn-lg stretched-link">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ related_product.name }}</h5>
+                        <div class="d-flex align-items-center mb-2">
+                            {% if related_product.artist.profile_picture %}
+                            <img src="{{ related_product.artist.profile_picture.url }}" alt="{{ related_product.artist.name }}" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                            {% endif %}
+                            <p class="card-text text-muted mb-0">By {{ related_product.artist.name }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0 text-primary">Rs. {{ related_product.price }}</span>
+                            {% if related_product.stock > 0 %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check"></i> In Stock
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger">
+                                <i class="fas fa-times"></i> Out of Stock
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .product-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .product-card:hover .product-overlay {
+        opacity: 1;
+    }
+    
+    .hover-shadow {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+</style>
+{% endblock %} 

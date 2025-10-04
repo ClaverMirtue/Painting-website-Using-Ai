@@ -1,0 +1,687 @@
+{% extends 'paintingapp/base.html' %}
+{% load custom_filters %}
+{% load static %}
+
+{% block title %}Home - Art Gallery{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+        margin-top: 76px;
+    }
+
+    .hero-slider {
+        position: relative;
+        height: 100%;
+    }
+
+    .hero-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+    }
+    
+    .hero-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        width: 80%;
+        max-width: 800px;
+        z-index: 2;
+    }
+    
+    .hero-content h1 {
+        font-size: 4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    
+    .hero-content p {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .hero-content .btn {
+        opacity: 0;
+        transform: translateY(30px);
+        padding: 1rem 2.5rem;
+        font-size: 1.2rem;
+        background: var(--secondary-color);
+        border: none;
+        transition: all 0.3s ease;
+        border-radius: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .hero-content .btn:hover {
+        background: var(--accent-color);
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .hero-slide.active .animate-text {
+        animation: fadeInUp 1s ease forwards;
+    }
+
+    .hero-slide.active .hero-content h1 {
+        animation-delay: 0.3s;
+    }
+
+    .hero-slide.active .hero-content p {
+        animation-delay: 0.6s;
+    }
+
+    .hero-slide.active .hero-content .btn {
+        animation-delay: 0.9s;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .slider-controls {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        z-index: 3;
+    }
+
+    .prev-btn, .next-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+    }
+
+    .prev-btn:hover, .next-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .slider-dots {
+        display: flex;
+        gap: 10px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .dot.active {
+        background: white;
+        transform: scale(1.2);
+    }
+
+    .hero-slide::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.5));
+    }
+
+    .featured-section {
+        padding: 80px 0;
+        background: var(--light-color);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .section-title h2 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+
+    .section-title p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .featured-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+    }
+
+    .featured-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .featured-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .featured-card .card-body {
+        padding: 20px;
+    }
+
+    .featured-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+
+    .featured-card p {
+        color: #666;
+        margin-bottom: 15px;
+    }
+
+    .featured-card .price {
+        font-size: 1.2rem;
+        color: var(--secondary-color);
+        font-weight: bold;
+    }
+
+    .featured-card .btn {
+        width: 100%;
+        padding: 10px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .featured-card .btn:hover {
+        background: var(--secondary-color);
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: var(--primary-color);
+    }
+    
+    .category-card {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 30px;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .category-image {
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .category-content {
+        padding: 20px;
+    }
+    
+    .category-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+    
+    .product-card {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 30px;
+        height: 100%;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .product-image {
+        height: 250px;
+        object-fit: cover;
+    }
+    
+    .product-content {
+        padding: 20px;
+    }
+    
+    .product-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+    
+    .product-price {
+        font-size: 1.3rem;
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+    
+    .artist-section {
+        background-color: var(--secondary-color);
+        padding: 80px 0;
+    }
+    
+    .artist-card {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 30px;
+    }
+    
+    .artist-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .artist-image {
+        height: 300px;
+        object-fit: cover;
+    }
+    
+    .artist-content {
+        padding: 20px;
+    }
+    
+    .artist-name {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+        color: var(--primary-color);
+    }
+    
+    .artist-profession {
+        color: var(--accent-color);
+        margin-bottom: 10px;
+    }
+
+    /* Typing Animation Styles */
+    .typing-container {
+        position: relative;
+        display: inline-block;
+        z-index: 2;
+    }
+
+    .typing-text {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        border-right: 3px solid white;
+        width: 0;
+        animation: typing 4s steps(40, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    .typing-subtext {
+        opacity: 0;
+        animation: fadeIn 2s ease-in forwards;
+        animation-delay: 4.5s;
+    }
+
+    @keyframes typing {
+        from { width: 0 }
+        to { width: 100% }
+    }
+
+    @keyframes blink {
+        from, to { border-color: transparent }
+        50% { border-color: white }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary, .btn-outline-primary {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-primary:hover, .btn-outline-primary:hover {
+        transform: translateY(-3px);
+    }
+
+    .submissions-section {
+        padding: 5rem 0;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .section-header h2 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .section-header p {
+        font-size: 1.2rem;
+        color: var(--dark-color);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .submission-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+    
+    .submission-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .submission-image {
+        height: 250px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .submission-card:hover .submission-image {
+        transform: scale(1.05);
+    }
+    
+    .submission-info {
+        padding: 1.5rem;
+    }
+    
+    .submission-title {
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    
+    .submission-description {
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .submission-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .artist-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .artist-info i {
+        color: var(--accent-color);
+    }
+    
+    .date-info {
+        color: var(--accent-color);
+        font-size: 0.8rem;
+    }
+    
+    .view-all-btn {
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    .view-all-btn .btn {
+        padding: 0.8rem 2.5rem;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        background: var(--primary-color);
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .view-all-btn .btn:hover {
+        background: var(--accent-color);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-slider">
+        <div class="hero-slide active" style="background-image: url('{% static 'images/1.webp' %}')">
+            <div class="hero-content">
+                <h1 class="animate-text">Discover Beautiful Art</h1>
+                <p class="animate-text">Explore our collection of unique paintings</p>
+                <a href="{% url 'category_list' %}" class="btn btn-primary btn-lg animate-text">Shop Now</a>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('{% static 'images/2.webp' %}')">
+            <div class="hero-content">
+                <h1 class="animate-text">Original Masterpieces</h1>
+                <p class="animate-text">Handcrafted by talented artists</p>
+                <a href="{% url 'artist_list' %}" class="btn btn-primary btn-lg animate-text">Meet Artists</a>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('{% static 'images/3.jpg' %}')">
+            <div class="hero-content">
+                <h1 class="animate-text">Exclusive Collection</h1>
+                <p class="animate-text">Find your perfect piece of art</p>
+                <a href="{% url 'category_list' %}" class="btn btn-primary btn-lg animate-text">View Gallery</a>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('{% static 'images/4.webp' %}')">
+            <div class="hero-content">
+                <h1 class="animate-text">Art for Every Space</h1>
+                <p class="animate-text">Transform your home with art</p>
+                <a href="{% url 'category_list' %}" class="btn btn-primary btn-lg animate-text">Explore More</a>
+            </div>
+        </div>
+    </div>
+    <div class="slider-controls">
+        <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <div class="slider-dots"></div>
+        <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+</section>
+
+<!-- Featured Section -->
+
+
+<!-- Featured Categories -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Featured Categories</h2>
+        <div class="row">
+            {% for category in categories %}
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+                <div class="category-card">
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="category-image w-100">
+                    <div class="category-content">
+                        <h3 class="category-title">{{ category.name }}</h3>
+                        <p>{{ category.description|truncatewords:20 }}</p>
+                        <a href="{% url 'category_detail' category.pk %}" class="btn btn-primary">View Paintings</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">Featured Paintings</h2>
+        <div class="row">
+            {% for product in featured_products %}
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter|multiply:100 }}">
+                <div class="product-card">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image w-100">
+                    <div class="product-content">
+                        <h3 class="product-title">{{ product.name }}</h3>
+                        <p class="text-muted">{{ product.artist.name }}</p>
+                        <p class="product-price">Rs. {{ product.price }}</p>
+                        <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Artists -->
+
+<!-- User Submissions Section -->
+<section class="submissions-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Community Artwork</h2>
+            <p>Discover amazing artwork submitted by our talented community members</p>
+        </div>
+        
+        <div class="row">
+            {% for submission in recent_submissions %}
+                <div class="col-md-4">
+                    <div class="card submission-card">
+                        <img src="{{ submission.image.url }}" class="card-img-top submission-image" alt="{{ submission.name }}">
+                        <div class="card-body submission-info">
+                            <h5 class="card-title submission-title">{{ submission.name }}</h5>
+                            <p class="card-text submission-description">{{ submission.description|truncatewords:15 }}</p>
+                            <div class="submission-meta">
+                                <div class="artist-info">
+                                    <i class="fas fa-user"></i>
+                                    <span>{{ submission.artist.username|default:"Anonymous" }}</span>
+                                </div>
+                                <div class="date-info">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ submission.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="view-all-btn">
+            <a href="{% url 'user_submissions' %}" class="btn btn-primary">
+                <i class="fas fa-paint-brush me-2"></i>View All Submissions
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const slides = document.querySelectorAll('.hero-slide');
+        const dots = document.querySelector('.slider-dots');
+        const prevBtn = document.querySelector('.prev-btn');
+        const nextBtn = document.querySelector('.next-btn');
+        let currentSlide = 0;
+
+        // Create dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (index === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(index));
+            dots.appendChild(dot);
+        });
+
+        function updateSlider() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                dots.children[index].classList.remove('active');
+            });
+            slides[currentSlide].classList.add('active');
+            dots.children[currentSlide].classList.add('active');
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlider();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateSlider();
+        }
+
+        // Event listeners
+        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', prevSlide);
+
+        // Auto slide
+        setInterval(nextSlide, 5000);
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,567 @@
+{% extends 'paintingapp/base.html' %}
+{% load static %}
+
+{% block title %}Customize Your Painting{% endblock %}
+
+{% block extra_css %}
+<style>
+    .customize-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .customize-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .customize-header h1 {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+
+    .customize-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .customize-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .upload-section, .preview-section {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 10px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .upload-area:hover {
+        border-color: var(--secondary-color);
+        background: rgba(52, 152, 219, 0.05);
+    }
+
+    .upload-area i {
+        font-size: 3rem;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+    }
+
+    .upload-area p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .customize-options {
+        margin-top: 2rem;
+    }
+
+    .option-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .option-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .option-group select, .option-group input {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .option-group select:focus, .option-group input:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    .preview-section {
+        position: relative;
+    }
+
+    .preview-image {
+        width: 100%;
+        height: 400px;
+        object-fit: contain;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+
+    .preview-controls {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .preview-controls button {
+        flex: 1;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-save {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+    .btn-reset {
+        background: #f8f9fa;
+        color: var(--primary-color);
+        border: 1px solid #ddd;
+    }
+
+    .btn-reset:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .customization-form {
+        margin-top: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .form-group textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    }
+
+    @media (max-width: 768px) {
+        .customize-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .success-card {
+        display: none;
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        margin-top: 2rem;
+        border: 1px solid #e0e0e0;
+        animation: fadeIn 0.5s ease;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .success-card.show {
+        display: block;
+    }
+
+    .success-card h4 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .success-card h4 i {
+        color: #28a745;
+        font-size: 1.8rem;
+    }
+
+    .success-card p {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+
+    .timer {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .timer-item {
+        flex: 1;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .timer-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .timer-item span {
+        display: block;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+    }
+
+    .timer-item label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .success-actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .success-actions .btn {
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .success-actions .btn-primary {
+        background: var(--primary-color);
+        border: none;
+    }
+
+    .success-actions .btn-primary:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+    .success-actions .btn-outline {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        background: transparent;
+    }
+
+    .success-actions .btn-outline:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="customize-container">
+    <div class="customize-header">
+        <h1>Customize Your Painting</h1>
+        <p>Upload your image and customize it to create your unique artwork</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="customization-form" id="customizationForm">
+        {% csrf_token %}
+        <div class="customize-grid">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag and drop your image here or click to browse</p>
+                    <input type="file" id="imageInput" name="image" accept="image/*" style="display: none;" required>
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('imageInput').click()">
+                        Choose File
+                    </button>
+                </div>
+
+                <div class="customize-options">
+                    <div class="option-group">
+                        <label for="style">Art Style</label>
+                        <select id="style" name="style" class="form-control" required>
+                            <option value="">Select Style</option>
+                            <option value="oil">Oil Painting</option>
+                            <option value="watercolor">Watercolor</option>
+                            <option value="sketch">Sketch</option>
+                            <option value="popart">Pop Art</option>
+                            <option value="impressionist">Impressionist</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="size">Canvas Size</label>
+                        <select id="size" name="size" class="form-control" required>
+                            <option value="">Select Size</option>
+                            <option value="small">Small (12" x 16")</option>
+                            <option value="medium">Medium (16" x 20")</option>
+                            <option value="large">Large (20" x 24")</option>
+                            <option value="xlarge">Extra Large (24" x 36")</option>
+                        </select>
+                    </div>
+
+                    <div class="option-group">
+                        <label for="frame">Frame Style</label>
+                        <select id="frame" name="frame" class="form-control" required>
+                            <option value="">Select Frame</option>
+                            <option value="none">No Frame</option>
+                            <option value="classic">Classic Wood</option>
+                            <option value="modern">Modern Metal</option>
+                            <option value="vintage">Vintage Gold</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <img id="previewImage" class="preview-image" src="{% static 'images/placeholder.jpg' %}" alt="Preview">
+                
+                <div class="form-group">
+                    <label for="title">Painting Title</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" class="form-control" required></textarea>
+                </div>
+
+                <div class="preview-controls">
+                    <button type="submit" class="btn btn-save">
+                        <i class="fas fa-save me-2"></i>Save Painting
+                    </button>
+                    <button type="reset" class="btn btn-reset">
+                        <i class="fas fa-redo me-2"></i>Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Success Card -->
+    <div class="success-card" id="successCard">
+        <h4>
+            <i class="fas fa-check-circle"></i>
+            Painting Saved Successfully!
+        </h4>
+        <p>Your customized painting will be ready in:</p>
+        <div class="timer">
+            <div class="timer-item">
+                <span id="days">4</span>
+                <label>Days</label>
+            </div>
+            <div class="timer-item">
+                <span id="hours">00</span>
+                <label>Hours</label>
+            </div>
+            <div class="timer-item">
+                <span id="minutes">00</span>
+                <label>Minutes</label>
+            </div>
+            <div class="timer-item">
+                <span id="seconds">00</span>
+                <label>Seconds</label>
+            </div>
+        </div>
+        <div class="success-actions">
+            <a href="#" class="btn btn-primary" id="viewPainting">
+                <i class="fas fa-eye me-2"></i>View Painting
+            </a>
+            <button class="btn btn-outline" onclick="window.location.reload()">
+                <i class="fas fa-redo me-2"></i>Create Another
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+    const form = document.getElementById('customizationForm');
+
+    // Handle drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#3498DB';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = '#ddd';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#ddd';
+        
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            imageInput.files = e.dataTransfer.files;
+            previewImage.src = URL.createObjectURL(file);
+        }
+    });
+
+    // Handle file input change
+    imageInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            previewImage.src = URL.createObjectURL(file);
+        }
+    });
+
+    // Check for saved timer state
+    const savedEndTime = localStorage.getItem('paintingEndTime');
+    if (savedEndTime) {
+        const endDate = new Date(savedEndTime);
+        const now = new Date();
+        if (endDate > now) {
+            showSuccessCard(endDate);
+        } else {
+            localStorage.removeItem('paintingEndTime');
+        }
+    }
+
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate form
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        // Get CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // Create FormData object
+        const formData = new FormData(form);
+        
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+        submitButton.disabled = true;
+
+        // Send the request
+        fetch('{% url "save_customized_painting" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                // Set end time and save to localStorage
+                const endDate = new Date();
+                endDate.setDate(endDate.getDate() + 4);
+                localStorage.setItem('paintingEndTime', endDate.toISOString());
+                
+                // Show success card with timer
+                showSuccessCard(endDate);
+                
+                // Set up view painting button
+                document.getElementById('viewPainting').href = data.redirect_url;
+            } else {
+                console.error('Error from server:', data.error);
+                alert('Error: ' + (data.error || 'An unknown error occurred'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving your painting. Please try again. Error details: ' + error.message);
+        })
+        .finally(() => {
+            submitButton.innerHTML = originalText;
+            submitButton.disabled = false;
+        });
+    });
+
+    function showSuccessCard(endDate) {
+        const successCard = document.getElementById('successCard');
+        successCard.classList.add('show');
+        
+        // Update timer every second
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = endDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            
+            if (distance < 0) {
+                clearInterval(timer);
+                successCard.style.display = 'none';
+                localStorage.removeItem('paintingEndTime');
+            }
+        }, 1000);
+    }
+});
+</script>
+{% endblock %} 
